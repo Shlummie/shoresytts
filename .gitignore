@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/.venv/
+/.tools/
 /.pnp
 .pnp.*
 .yarn/*
@@ -15,6 +17,8 @@
 
 # compiler and package-manager caches
 *.tsbuildinfo
+__pycache__/
+*.py[cod]
 /.pnpm-store/
 
 # next.js
@@ -42,6 +46,7 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+/models/
 
 # local Codex/design-tool state and visual review captures
 /.freebuff/

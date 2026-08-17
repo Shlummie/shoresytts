@@ -1,56 +1,99 @@
 # Shoresy TTS
 
-A small local phrase-to-voice page. Type a line at `http://127.0.0.1:3000`
-and the local Qwen voice runner returns a WAV for playback.
+A small, standalone phrase-to-voice website. Type a chirp, press **Speak**, and
+the server returns a WAV for immediate playback.
 
-## What it is
+This repository includes its own Qwen runner and setup scripts. It does not
+need a separate Draven TTS checkout or installation.
 
-A single-purpose local phrase-to-audio utility for Shoresy fans: type a short
-chirp, generate it, and hear it rendered in a Shoresy-inspired voice line.
-There are no accounts or cloud inference APIs—just one text field, one Speak
-action, generation status, errors, and audio playback inside a Sudbury
-Blueberry Bulldogs arena-ticket interface.
+## Windows: easiest setup
 
-The repository does not include voice-reference recordings or transcripts.
-Voice matching is available only with a local reference that you are
-authorized to use; otherwise the app falls back to the Qwen `Ryan` preset with
-a Shoresy-inspired delivery instruction.
+You need:
 
-## Run it
+- Windows 10 or 11
+- Node.js 22 or newer
+- Python 3.11 or 3.12
+- An NVIDIA CUDA GPU is strongly recommended. CPU mode is available but slow.
 
-Prerequisites:
+Then:
 
-- Node.js `>=22.13.0`
-- The existing Draven TTS environment and Qwen models
-- An NVIDIA CUDA GPU for the configured inference path
+1. Double-click `Setup Shoresy TTS.cmd` once.
+2. To enable voice matching, add an authorized `reference.wav` and its exact
+   `transcript.txt` to `voice-reference/`.
+3. Double-click `Start Shoresy TTS.cmd`.
+4. Open `http://127.0.0.1:3000`.
 
-```powershell
+Setup creates a project-local `.venv`, installs the pinned Python packages,
+downloads a checksum-verified project-local copy of SoX, and automatically uses
+the official CUDA 12.8 PyTorch wheel when it detects an NVIDIA GPU. The first
+spoken line downloads the selected Qwen model weights from Hugging Face, so it
+takes longer than later lines.
+
+Without both reference files, the app still works using Qwen's `Ryan` preset
+with a Shoresy-inspired delivery instruction. It is not a direct voice match
+in that fallback mode.
+
+## macOS and Linux
+
+Install Node.js 22+, Python 3.11+, and SoX first. Then run:
+
+```bash
 npm install
-npm run dev -- --hostname 0.0.0.0
+npm run setup:tts:unix
+npm run dev:lan
 ```
 
-The page is local-only. Each generation launches the local Qwen runner and may
-take a few minutes while the 1.7B model loads.
+The local setup uses the official
+[Qwen3-TTS package](https://github.com/QwenLM/Qwen3-TTS) and defaults to the
+official [1.7B Base model](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base)
+for reference-audio voice cloning.
 
-## How the voice works
+## Let other people use it
 
-By default, the app derives the existing Draven TTS installation from
-`%USERPROFILE%` and expects:
+`Start Shoresy TTS.cmd` binds the site to all local network interfaces. Other
+devices can open `http://YOUR-COMPUTER-IP:3000` while the server is running.
+Only the server computer needs the model and Python runtime; visitors need only
+a browser.
 
-- `draventts\venv\Scripts\python.exe`
-- `draventts\qwen_voice.py`
-- `draventts\models\Qwen3-TTS-12Hz-1.7B-CustomVoice`
-- `draventts\models\Qwen3-TTS-12Hz-1.7B-Base`
+Opening that port to the public internet also exposes an expensive GPU endpoint
+with no built-in accounts or rate limit. Put authentication and rate limiting
+in front of it before public port forwarding.
 
-To use voice matching, place an authorized `reference.wav` and its exact
-`transcript.txt` in `voice-reference/`. Both files are ignored by Git. With no
-reference present, the app uses the `Ryan` preset with a terse, fast, dry,
-confident hockey-room delivery instruction.
+For a separately hosted frontend, set `SHORESY_TTS_API_URL` to a GPU-backed
+endpoint that accepts `POST {"phrase":"..."}` and returns `audio/wav`. Set
+`SHORESY_TTS_API_TOKEN` if that endpoint expects a bearer token. A static or
+Cloudflare-only frontend cannot run the local Python model by itself.
 
-If the existing runner lives elsewhere, set `DRAVEN_TTS_ROOT`, or override the
-individual `QWEN_TTS_PYTHON`, `QWEN_TTS_SCRIPT`, `QWEN_TTS_MODEL`,
-`QWEN_TTS_CLONE_MODEL`, and `QWEN_TTS_SOX_DIR` paths before starting the app.
-`QWEN_TTS_MODE=custom` or `QWEN_TTS_MODE=clone` can explicitly select a mode.
+## Voice configuration
+
+The default behavior is automatic:
+
+- Both `voice-reference/reference.wav` and `voice-reference/transcript.txt`
+  present: use the 1.7B Base clone model.
+- Reference missing: use the 1.7B CustomVoice model and `Ryan` preset.
+
+If matching model folders already exist under `models/`, the server uses them
+instead of the Hugging Face cache. The entire `models/` directory is ignored by
+Git.
+
+Optional environment overrides:
+
+| Variable | Purpose |
+| --- | --- |
+| `QWEN_TTS_MODE` | Force `clone` or `custom`. |
+| `QWEN_TTS_REF_WAV` | Reference WAV path. |
+| `QWEN_TTS_REF_TEXT` | Literal transcript or transcript-file path. |
+| `QWEN_TTS_PYTHON` | Python executable; defaults to the project `.venv`. |
+| `QWEN_TTS_SCRIPT` | Runner path; defaults to `tts/qwen_voice.py`. |
+| `QWEN_TTS_MODEL` | CustomVoice model ID or local directory. |
+| `QWEN_TTS_CLONE_MODEL` | Base clone model ID or local directory. |
+| `QWEN_TTS_DEVICE` | Device such as `auto`, `cpu`, or `cuda:0`. |
+| `QWEN_TTS_DTYPE` | `auto`, `float32`, `float16`, or `bfloat16`. |
+| `QWEN_TTS_ATTN` | Attention implementation; defaults to `eager`. |
+| `QWEN_TTS_SOX_DIR` | Optional custom directory containing `sox`. |
+| `QWEN_TTS_TORCH_INDEX_URL` | Override the PyTorch wheel index used during setup. |
+| `SHORESY_TTS_API_URL` | Optional remote WAV-generation endpoint. |
+| `SHORESY_TTS_API_TOKEN` | Optional bearer token for the remote endpoint. |
 
 ## Checks
 
@@ -59,37 +102,34 @@ npm run lint
 npm test
 ```
 
+The standalone runner can also be checked directly:
+
+```powershell
+.venv\Scripts\python.exe tts\qwen_voice.py --check
+```
+
 ## Project structure
 
-- `app/` — the page and `/api/speak` route.
-- `build/` — the local TTS middleware and shared voice resolver.
-- `worker/` — the Cloudflare Worker entry for the hosted UI build.
-- `db/` and `drizzle/` — Drizzle/D1 schema scaffolding.
-- `voice-reference/` — local-only reference setup instructions.
-- `public/` — brand imagery, fonts, and paper textures.
-- `tests/` — rendered-HTML smoke tests.
+- `app/` - the page and `/api/speak` route.
+- `build/` - shared local/remote TTS runtime and Vite middleware.
+- `tts/` - the bundled Qwen command-line runner.
+- `scripts/` - Windows and Unix setup scripts.
+- `voice-reference/` - ignored local voice-reference files and instructions.
+- `public/` - brand imagery, fonts, and paper textures.
+- `tests/` - rendered-HTML smoke tests.
 
-## Product and design
+## Privacy and rights boundary
 
-The app is deliberately one phrase, one action, and one result. It accepts up
-to 500 characters, preserves keyboard and reduced-motion support, and keeps
-generation state visible because local inference can be slow.
-
-The full color, typography, layout, and component system is recorded in
-[`DESIGN.md`](DESIGN.md). Local design-review captures are intentionally
-excluded from the repository.
-
-## Privacy boundary
-
-The repository excludes local reference audio and transcripts, source video,
-generated voice output, environment files, dependency/build caches, browser
-screenshots, machine-specific tool state, and absolute user-directory paths.
+The public repository excludes reference audio, transcripts, source video,
+generated audio, model weights, environment files, caches, screenshots, and
+machine-specific paths. Use only voice material you are authorized to process.
+This is an unofficial fan project and is not affiliated with the show, its
+cast, producers, distributors, or rights holders.
 
 ## Asset sources and licensing
 
-These assets are used by a local, unaffiliated fan interface. Their presence
-does not imply permission for public redistribution or an official
-relationship with the show.
+These assets are used by an unaffiliated fan interface. Their presence does
+not imply permission for every form of redistribution or commercial use.
 
 | Local file | Source |
 | --- | --- |
@@ -100,5 +140,5 @@ relationship with the show.
 | `public/textures/ticket-blue-paper.png` | Original generated Carolina-blue paper scan; its prompt is stored beside it and embedded in the PNG metadata. |
 | `public/textures/ticket-ivory-paper.png` | Original generated ivory paper scan; its prompt is stored beside it and embedded in the PNG metadata. |
 
-Before publishing or redistributing the show photography and marks, confirm
-that they are cleared for the intended use.
+Confirm that show photography and marks are cleared for the intended use before
+redistributing them.

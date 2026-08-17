@@ -7,10 +7,13 @@
   },
   "scripts": {
     "dev": "vinext dev",
+    "dev:lan": "vinext dev --hostname 0.0.0.0",
+    "setup:tts": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-tts.ps1",
+    "setup:tts:unix": "bash scripts/setup-tts.sh",
     "build": "vinext build",
     "start": "vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "test": "npm run build && node --test tests/rendered-html.test.mjs tests/standalone-runtime.test.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern .vinext --ignore-pattern .venv --ignore-pattern .tools --ignore-pattern .freebuff --ignore-pattern .impeccable --ignore-pattern .work --ignore-pattern .wrangler --ignore-pattern models --ignore-pattern work",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
