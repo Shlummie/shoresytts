@@ -1,0 +1,589 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Oswald";
+  src: url("/fonts/Oswald-wght.ttf") format("truetype-variations");
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+}
+
+:root {
+  --arena-black: #07090d;
+  --ticket-blue: #a9d8ef;
+  --ticket-blue-deep: #79b5d4;
+  --ticket-paper: #f4f2eb;
+  --brown: #55351f;
+  --brown-dark: #2a190f;
+  --goal-red: #df3028;
+  --rink-white: #f7fbfb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--arena-black);
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--arena-black);
+  color: var(--rink-white);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.arena {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  align-items: start;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 0 clamp(18px, 3vw, 48px) 72px;
+  background: var(--arena-black);
+}
+
+.photo-field {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background-color: var(--arena-black);
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(7, 9, 13, 0.02) 0%,
+      rgba(7, 9, 13, 0.08) 31%,
+      rgba(7, 9, 13, 0.7) 65%,
+      var(--arena-black) 84%
+    ),
+    url("/brand/shoresy-season-3-key-art-full.jpg");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: saturate(0.68) brightness(0.72) contrast(1.08);
+}
+
+.jersey-prop {
+  position: absolute;
+  right: -7vw;
+  bottom: -12vw;
+  z-index: -1;
+  width: min(42vw, 540px);
+  aspect-ratio: 1;
+  opacity: 0.78;
+  background: url("/brand/shore-69-jersey.png") center / auto 130% no-repeat;
+  filter: brightness(0.72) saturate(0.9);
+  pointer-events: none;
+  transform: rotate(-7deg);
+  transform-origin: center;
+}
+
+.ticket {
+  position: relative;
+  display: grid;
+  width: min(94vw, 1480px);
+  min-height: 330px;
+  grid-template-columns:
+    minmax(230px, 0.85fr)
+    minmax(380px, 1.85fr)
+    minmax(170px, 0.55fr);
+  justify-self: center;
+  margin-top: clamp(290px, 36vh, 390px);
+  padding: 18px;
+  overflow: visible;
+  color: var(--brown-dark);
+  background-color: var(--ticket-blue);
+  background-image: url("/textures/ticket-blue-paper.png");
+  background-size: 720px 720px;
+  box-shadow: 0 32px 86px rgba(0, 0, 0, 0.52), 0 9px 24px rgba(0, 0, 0, 0.28);
+  clip-path: polygon(
+    13px 0,
+    calc(100% - 13px) 0,
+    100% 13px,
+    100% calc(100% - 13px),
+    calc(100% - 13px) 100%,
+    13px 100%,
+    0 calc(100% - 13px),
+    0 13px
+  );
+}
+
+.ticket::before {
+  position: absolute;
+  inset: 11px;
+  z-index: 5;
+  border: 2px solid rgba(85, 53, 31, 0.9);
+  content: "";
+  pointer-events: none;
+}
+
+.ticket::after {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  left: 18px;
+  z-index: 4;
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--brown) 0 46%,
+    var(--goal-red) 46% 54%,
+    var(--brown) 54% 100%
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.ticket-identity,
+.ticket-copy,
+.ticket-stub,
+.ticket-output {
+  position: relative;
+  z-index: 2;
+}
+
+.ticket-identity {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 28px 30px 16px;
+}
+
+.bulldogs-mark {
+  display: block;
+  width: clamp(94px, 10vw, 142px);
+  height: 94px;
+  background: url("/brand/shoresy-logo.png") left center / contain no-repeat;
+}
+
+h1 {
+  margin: 6px 0 18px;
+  color: var(--brown);
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(2.8rem, 4.6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.84;
+  text-transform: uppercase;
+}
+
+h1 span,
+h1 em {
+  display: block;
+}
+
+h1 em {
+  width: max-content;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 5px solid var(--goal-red);
+  font-size: 0.5em;
+  font-style: normal;
+  letter-spacing: 0.04em;
+}
+
+.ticket-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid rgba(85, 53, 31, 0.68);
+}
+
+.ticket-meta div {
+  min-width: 0;
+  padding: 8px 8px 0 0;
+}
+
+.ticket-meta div + div {
+  padding-left: 9px;
+  border-left: 1px solid rgba(85, 53, 31, 0.68);
+}
+
+.ticket-meta dt {
+  color: rgba(42, 25, 15, 0.72);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ticket-meta dd {
+  margin: 2px 0 0;
+  color: var(--brown);
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ticket-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 26px 34px 32px;
+}
+
+.ticket-copy label {
+  margin-bottom: 10px;
+  color: var(--brown);
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 190px;
+  flex: 1;
+  resize: vertical;
+  border: 2px solid var(--brown);
+  border-radius: 3px;
+  padding: 18px 20px;
+  color: var(--brown-dark);
+  background-color: var(--ticket-paper);
+  background-image: url("/textures/ticket-ivory-paper.png");
+  background-size: 640px 640px;
+  box-shadow: inset 0 3px 9px rgba(85, 53, 31, 0.08);
+  outline: none;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+textarea::placeholder {
+  color: #715d50;
+  opacity: 1;
+}
+
+textarea:focus {
+  border-color: var(--goal-red);
+  box-shadow: inset 0 3px 9px rgba(85, 53, 31, 0.08), 0 0 0 3px rgba(223, 48, 40, 0.22);
+}
+
+.random-chirp {
+  align-self: flex-start;
+  margin-top: 12px;
+  border: 0;
+  border-bottom: 2px solid rgba(85, 53, 31, 0.55);
+  padding: 2px 0 4px;
+  background: transparent;
+  color: var(--brown);
+  font-family: "Oswald", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.random-chirp:hover:not(:disabled) {
+  color: var(--brown-dark);
+  border-color: var(--goal-red);
+}
+
+.random-chirp:focus-visible {
+  outline: 3px solid var(--goal-red);
+  outline-offset: 4px;
+}
+
+.random-chirp:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ticket-stub {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 9px;
+  margin: -18px -18px -18px 0;
+  border: 0;
+  padding: 36px 24px 44px 34px;
+  color: var(--brown-dark);
+  background: transparent;
+  text-transform: uppercase;
+  transition: color 180ms ease, background-color 180ms ease, transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ticket-stub::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  width: 20px;
+  background: radial-gradient(circle at center 10px, var(--arena-black) 0 4px, transparent 4.6px) 0 0 / 20px 20px repeat-y;
+  content: "";
+}
+
+.stub-action {
+  display: block;
+  width: 100%;
+  border-top: 4px solid var(--goal-red);
+  border-bottom: 4px solid var(--goal-red);
+  padding: 12px 0 14px;
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(3rem, 5vw, 5.2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 0.88;
+}
+
+.stub-note {
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-align: center;
+}
+
+.ticket-stub:hover:not(:disabled) {
+  color: var(--rink-white);
+  background: var(--brown);
+  transform: translateX(7px);
+}
+
+.ticket-stub:focus-visible {
+  outline: 4px solid var(--goal-red);
+  outline-offset: -9px;
+}
+
+.ticket-stub:disabled {
+  cursor: not-allowed;
+  opacity: 0.78;
+}
+
+.ticket.is-busy .ticket-stub::before {
+  animation: perforation-pulse 900ms ease-in-out infinite alternate;
+}
+
+.ticket-output {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  margin: 0 -18px -18px;
+  border-top: 2px solid var(--brown);
+  padding: 14px 30px 18px;
+  color: var(--brown-dark);
+  background-color: var(--ticket-paper);
+  background-image: url("/textures/ticket-ivory-paper.png");
+  background-size: 640px 640px;
+}
+
+.docket-label {
+  color: var(--brown);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.error {
+  margin: 0;
+  color: #84251f;
+  font-weight: 700;
+}
+
+.audio-player {
+  width: 100%;
+  height: 44px;
+  accent-color: var(--goal-red);
+}
+
+@keyframes perforation-pulse {
+  from {
+    filter: brightness(0.8);
+    transform: translateX(-2px);
+  }
+  to {
+    filter: brightness(1.3);
+    transform: translateX(2px);
+  }
+}
+
+@media (max-width: 980px) {
+  .ticket {
+    grid-template-columns: minmax(205px, 0.75fr) minmax(330px, 1.55fr) minmax(145px, 0.5fr);
+  }
+
+  .ticket-identity {
+    padding-right: 18px;
+  }
+
+  .ticket-copy {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  .arena {
+    overflow: hidden;
+    padding: 0 14px 42px;
+  }
+
+  .photo-field {
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgba(7, 9, 13, 0.04) 0%,
+        rgba(7, 9, 13, 0.18) 34%,
+        rgba(7, 9, 13, 0.92) 58%,
+        var(--arena-black) 72%
+      ),
+      url("/brand/shoresy-season-3-key-art-full.jpg");
+    background-position: center top;
+    background-size: auto 620px;
+  }
+
+  .jersey-prop {
+    right: -28vw;
+    bottom: -4vw;
+    width: min(92vw, 500px);
+    opacity: 0.52;
+  }
+
+  .ticket {
+    width: min(100%, 520px);
+    min-height: 0;
+    grid-template-columns: 1fr;
+    margin-top: 230px;
+    padding: 14px;
+  }
+
+  .ticket::before {
+    inset: 8px;
+  }
+
+  .ticket::after {
+    right: 14px;
+    bottom: 7px;
+    left: 14px;
+    height: 3px;
+  }
+
+  .ticket-identity {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 8px 18px;
+    align-items: center;
+    padding: 12px 16px 14px;
+  }
+
+  .bulldogs-mark {
+    width: 112px;
+    height: 86px;
+    grid-row: 1 / span 2;
+  }
+
+  h1 {
+    margin: 8px 0 0;
+    font-size: clamp(3rem, 14vw, 4.6rem);
+  }
+
+  h1 em {
+    margin-top: 7px;
+  }
+
+  .ticket-meta {
+    grid-column: 1 / -1;
+    margin-top: 8px;
+  }
+
+  .ticket-copy {
+    padding: 22px 16px 24px;
+  }
+
+  textarea {
+    min-height: 158px;
+  }
+
+  .ticket-stub {
+    min-height: 104px;
+    margin: 0 -14px -14px;
+    padding: 28px 24px 23px;
+  }
+
+  .ticket-stub::before {
+    top: -10px;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 20px;
+    background: radial-gradient(circle at 10px center, var(--arena-black) 0 4px, transparent 4.6px) 0 0 / 20px 20px repeat-x;
+  }
+
+  .ticket-stub:hover:not(:disabled) {
+    transform: translateY(5px);
+  }
+
+  .stub-action {
+    font-size: 4rem;
+  }
+
+  .ticket-output {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin: 14px -14px -14px;
+    padding: 14px 22px 19px;
+  }
+}
+
+@media (max-width: 420px) {
+  .ticket {
+    margin-top: 205px;
+  }
+
+  .ticket-identity {
+    grid-template-columns: 94px minmax(0, 1fr);
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .bulldogs-mark {
+    width: 94px;
+    height: 76px;
+  }
+
+  .ticket-copy {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

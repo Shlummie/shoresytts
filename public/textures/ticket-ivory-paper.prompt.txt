@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: seamless website material texture
+Primary request: Create a high-resolution flat scan of lightly worn ivory arena ticket stock.
+Scene/backdrop: edge-to-edge paper surface, perfectly front-facing with uniform illumination.
+Style/medium: realistic fibrous paper texture, subtle pulp strands, faint warm printing specks, restrained handling wear.
+Composition/framing: square tile, even density across the entire frame, no focal point and no edges.
+Color palette: warm rink ivory matching #f4f2eb, with slightly darker cream fibers and extremely sparse chocolate-brown print flecks.
+Constraints: usable beneath semantic UI at low opacity; no text, no logos, no graphics, no perforation, no shadows, no perspective, no vignette, no watermark.
+Avoid: crumpled paper, torn edges, heavy stains, gradients, canvas weave, fabric, obvious repetition.
