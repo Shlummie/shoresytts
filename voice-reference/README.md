@@ -3,8 +3,8 @@
 Drop an authorized reference recording and its exact transcript here to enable
 local voice matching:
 
-- `reference.wav` — a reference voice clip you are authorized to use.
-- `transcript.txt` — the exact words spoken in the clip, nothing else.
+- `reference.wav` - a reference voice clip you are authorized to use.
+- `transcript.txt` - the exact words spoken in the clip, nothing else.
 
 When both files are present, `/api/speak` automatically switches to clone
 mode. Remove the files, or leave the folder empty, to fall back to the `Ryan`
